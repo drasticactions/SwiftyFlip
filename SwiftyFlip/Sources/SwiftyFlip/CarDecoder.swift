@@ -69,10 +69,6 @@ public class CarDecoder {
         var i = 0
         while true {
             let b = bytes[i]
-//            if b == -1 {
-//                return DecodedBlock(value: -1, length: -1)
-//            }
-            
             i += 1
             a.append(b)
             if (b & 0x80) == 0 {
@@ -90,10 +86,6 @@ public class CarDecoder {
         while true {
             var b: UInt8 = 0
             stream.read(&b, maxLength: 1)
-//            if b == -1 {
-//                return DecodedBlock(value: -1, length: -1)
-//            }
-            
             i += 1
             a.append(UInt8(b))
             if (UInt8(b) & 0x80) == 0 {
