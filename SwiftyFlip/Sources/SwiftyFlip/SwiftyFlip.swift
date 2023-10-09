@@ -14,7 +14,7 @@ public class SwiftyFlip_WSS
 {
     private var webSocketTask: URLSessionWebSocketTask!
     private let backgroundQueue = DispatchQueue.global(qos: .background)
-    
+    private let carDecoder = CarDecoder()
     public init(connectionUrl: String)
     {
     let session = URLSession(configuration: .default)
@@ -32,8 +32,17 @@ public class SwiftyFlip_WSS
                             let decoder = CBORDecoder(stream: CBORDataInputStream(data: [UInt8](data)))
                             let objectHeader = try! decoder.decodeItem()
                             let object = try! decoder.decodeItem()
-                            print(objectHeader!.toString())
-                            print(object!.toString())
+                            //print(objectHeader!.toString())
+                            //print(object!.toString())
+                            let blocks = (object!["blocks"])
+                            switch blocks {
+                                case let .byteString(val):
+                                    self.carDecoder.decodeCar(bytes: val, progress: self.carDecodedHandler)
+                                    break;
+                                default:
+                                    break;
+                            }
+//                            let testing = carDecoder.decode(blocks)
                             self.receiveMessages() // Continue to receive more messages
                         case .string(let text):
                             // Handle received text message
@@ -46,6 +55,21 @@ public class SwiftyFlip_WSS
                     print("WebSocket receive error: \(error)")
             }
         }
+    }
+    
+    func carDecodedHandler(event: CarProgressStatusEvent) {
+        // print("CAR Decoded - CID: \(event.cid), Bytes Count: \(event.bytes.count)")
+        let decoded = try! CBOR.decode(event.bytes)
+        let type = decoded!["$type"]
+        switch type?.toString() ?? ""
+        {
+            case "\"app.bsky.feed.post\"":
+            print(decoded!.toString())
+            break;
+            default:
+            break;
+        }
+        //print(type?.toString() ?? "")
     }
     
     func handleMessage (cborData: [UInt8])
