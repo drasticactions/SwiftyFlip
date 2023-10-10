@@ -16,13 +16,17 @@ let package = Package(
             targets: ["SwiftyFlip"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/valpackett/SwiftCBOR", branch: "master")
+        .package(path: "../SwiftCBOR"),
+        .package(url: "https://github.com/swift-libp2p/swift-cid", .upToNextMajor(from: "0.0.1")),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "SwiftyFlip", dependencies: ["SwiftCBOR"]),
+            name: "SwiftyFlip", dependencies: [
+                .product(name: "CID", package: "swift-cid"),
+                .product(name: "SwiftCBOR", package: "SwiftCBOR")
+            ]),
         .testTarget(
             name: "SwiftyFlipTests",
             dependencies: ["SwiftyFlip"]),

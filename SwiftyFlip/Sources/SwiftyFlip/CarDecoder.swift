@@ -6,22 +6,15 @@
 //
 
 import Foundation
+import CID
 
 // CarProgressStatusEvent class
 public class CarProgressStatusEvent {
-    public let cid: Cid
+    public let cid: CID
     public let bytes: [UInt8]
     
-    public init(cid: Cid, bytes: [UInt8]) {
+    public init(cid: CID, bytes: [UInt8]) {
         self.cid = cid
-        self.bytes = bytes
-    }
-}
-
-public class Cid {
-    public let bytes: [UInt8]
-    
-    public init(bytes: [UInt8]) {
         self.bytes = bytes
     }
 }
@@ -49,7 +42,7 @@ public class CarDecoder {
             start += body.length
             
             let cidBytes = Array(bytes[start..<(start + CidV1BytesLength)])
-            let cid = Cid(bytes: cidBytes)
+            let cid = try! CID(cidBytes)
             
             start += CidV1BytesLength
             let bs = Array(bytes[start..<(start + body.value - CidV1BytesLength)])

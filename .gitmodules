@@ -1,0 +1,3 @@
+[submodule "SwiftCBOR"]
+	path = SwiftCBOR
+	url = git@github.com:drasticactions/SwiftCBOR.git
